@@ -1,0 +1,120 @@
+DROP DATABASE phonthavy;
+
+CREATE DATABASE phonthavy;
+
+USE phonthavy;
+
+CREATE TABLE glasses (
+    id INT(11) PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    trademark VARCHAR(255) NOT NULL,
+    color VARCHAR(7) NOT NULL,
+    quantity INT(11) NOT NULL,
+    price INT(11) NOT NULL,
+    discount INT(1) NOT NULL,
+    is_opened TINYINT(1) NOT NULL
+);
+
+CREATE TABLE users (
+    id INT(11) PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(20) UNIQUE NOT NULL,
+    pass VARCHAR(32) NOT NULL,
+    first_name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255) NOT NULL,
+    phone VARCHAR(10) NOT NULL,
+    address VARCHAR(255) NOT NULL,
+    token VARCHAR(255)
+);
+
+CREATE TABLE carts (
+    id INT(11) PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    phone VARCHAR(10) NOT NULL,
+    email VARCHAR(255),
+    address VARCHAR(255) NOT NULL,
+    time DATETIME NOT NULL,
+    is_ordered TINYINT(1) NOT NULL
+);
+
+CREATE TABLE carts_glasses (
+    id INT(11) PRIMARY KEY AUTO_INCREMENT,
+    glass_id INT(11) NOT NULL,
+    cart_id INT(11) NOT NULL,
+    quantity INT(11) NOT NULL,
+    price INT(11) NOT NULL
+);
+
+CREATE TABLE posts (
+    id INT(11) PRIMARY KEY AUTO_INCREMENT,
+    glass_id INT(11) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    phone VARCHAR(10),
+    email VARCHAR(255),
+    rating INT(1) NOT NULL,
+    content VARCHAR(255) NOT NULL,
+    time DATETIME NOT NULL,
+    is_censored TINYINT(1) NOT NULL
+);
+
+CREATE TABLE comments (
+    id INT(11) PRIMARY KEY AUTO_INCREMENT,
+    user_id INT(11),
+    post_id INT(11) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    phone VARCHAR(10),
+    email VARCHAR(255),
+    content VARCHAR(255) NOT NULL,
+    time DATETIME NOT NULL,
+    is_censored TINYINT(1) NOT NULL
+);
+
+ALTER TABLE carts_glasses ADD CONSTRAINT fk_carts_glasses_glass_id FOREIGN KEY(glass_id) REFERENCES glasses(id);
+ALTER TABLE carts_glasses ADD CONSTRAINT fk_carts_glasses_cart_id FOREIGN KEY(cart_id) REFERENCES carts(id);
+ALTER TABLE posts ADD CONSTRAINT fk_posts_glass_id FOREIGN KEY(glass_id) REFERENCES glasses(id);
+ALTER TABLE comments ADD CONSTRAINT fk_comments_post_id FOREIGN KEY(post_id) REFERENCES posts(id);
+ALTER TABLE comments ADD CONSTRAINT fk_comments_user_id FOREIGN KEY(user_id) REFERENCES users(id);
+
+INSERT INTO `glasses` (`id`, `name`, `trademark`, `color`, `quantity`, `price`, `discount`, `is_opened`) VALUES
+(1, 'Mắt kính gọng tròn', 'Phonthavy Shop', '1c1c1c', 6, 2300000, 6, 1),
+(2, 'Mắt kính gọng tròn sang trọng', 'Phonthavy Shop', 'd9b871', 0, 3200000, 5, 1),
+(3, 'Mắt kính phong cách', 'K Moriyama', '4d393b', 1, 1300000, 4, 0),
+(4, 'Mắt kính cổ điển', 'M Toromya', '454142', 6, 3200000, 10, 0),
+(5, 'Mắt kính sang trọng lịch lãm', 'Glass Store TNC', 'd9b232', 4, 5100000, 10, 1);
+
+INSERT INTO `users` (`id`, `username`, `pass`, `first_name`, `last_name`, `phone`, `address`) VALUES
+(1, 'admin', '123', 'Phon', 'Thavy', '039885441', '702 Phan Đình Phùng'),
+(2, 'admin2', '123', 'Suka', 'Pan', '039878711', '702 Phan Đình Phùng');
+
+INSERT INTO `posts` (`id`, `glass_id`, `name`, `phone`, `email`, `rating`, `content`, `time`, `is_censored`) VALUES
+(8, 1, 'Đặng Trần', '', '', 4, 'Đeo vừa mắt&#44; nhẹ', '2021-07-05 16:35:59', 1),
+(9, 1, 'Mỹ Duyên', '', '', 5, 'Mua về sài cũng tạm được', '2021-07-05 16:36:52', 1),
+(10, 2, 'Nguyễn Thị Lan', '', '', 5, 'Thiết kế đẹp nên cho 5 sao', '2021-07-05 16:41:35', 1),
+(11, 2, 'Hoàng Nii', '', '', 4, 'Mới mua hôm qua sài cũng tạm ổn', '2021-07-05 16:42:05', 1),
+(12, 2, 'XX xxx', '', '', 1, 'Làm ăn thế mà được hả', '2021-07-05 16:42:37', 0),
+(13, 3, 'Minh Hiếu', '', '', 3, 'Định mua mà ngừng kinh doanh rồi', '2021-07-05 16:46:57', 1),
+(15, 1, 'Jack', '', '', 5, 'Đẹp quá', '2021-07-05 16:55:07', 1),
+(16, 5, 'Giang Trúc', '', '', 5, 'Vừa mới đặt hàng xong&#44; ko biết thế nào', '2021-07-05 16:58:38', 1),
+(17, 5, 'Khanh Nguyễn', '', '', 4, 'Xài tốt quá', '2021-07-06 02:49:25', 1);
+
+INSERT INTO `comments` (`id`, `user_id`, `post_id`, `name`, `phone`, `email`, `content`, `time`, `is_censored`) VALUES
+(9, NULL, 8, 'Quang Nhật', '', '', 'Mình xài cũng bị vậy', '2021-07-05 16:40:27', 1),
+(10, NULL, 10, 'Trung', '', '', 'Sử dụng tốt thật', '2021-07-05 16:46:05', 1),
+(11, NULL, 16, 'Admin', '', '', 'Cảm ơn bạn đã đặt hàng', '2021-07-05 16:59:56', 1),
+(12, NULL, 9, 'Trung', '', '', 'Tốt thiệt hihi', '2021-07-06 02:33:18', 0),
+(13, 1, 15, NULL, NULL, NULL, 'Cảm ơn bạn', '2021-07-06 02:40:56', 1),
+(15, 1, 16, NULL, NULL, NULL, 'Cảm ơn bạn đã đặt mua sản phẩm mắt kính của shop&#44; chúc bạn có một ngày tốt lành', '2021-07-06 02:52:03', 1),
+(16, 1, 17, NULL, NULL, NULL, 'Shop cảm ơn bài đánh giá của bạn', '2021-07-06 02:53:40', 1),
+(17, 2, 8, NULL, NULL, NULL, 'Shop cảm ơn bài đánh giá của bạn', '2021-07-06 02:54:24', 1);
+
+INSERT INTO `carts` (`id`, `name`, `phone`, `email`, `address`, `time`, `is_ordered`) VALUES
+(1, 'Hùng', '0375994542', '', '702 Phan Đình Phùng', '2021-07-05 08:48:35', 1),
+(2, 'Thị Trang', '035998711', '', '779 Lê Hồng Phong', '2021-07-05 09:11:35', 0),
+(3, 'Jenny', '0375994542', '', '702 Phan Đình Phùng', '2021-07-05 16:51:24', 0),
+(4, 'Giang Trúc', '0375994542', '', '702 Phan Đình Phùng', '2021-07-05 16:58:06', 1);
+
+INSERT INTO `carts_glasses` (`id`, `glass_id`, `cart_id`, `quantity`, `price`) VALUES
+(1, 1, 1, 1, 2162000),
+(2, 5, 1, 1, 4590000),
+(3, 1, 2, 1, 2162000),
+(4, 1, 3, 2, 2162000),
+(5, 5, 4, 2, 4590000);
