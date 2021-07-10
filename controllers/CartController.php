@@ -97,10 +97,10 @@ class CartController extends Controller {
         $post = $request['POST'];
         $carts = $request['SESSION']['carts'];
 
-        $name = $post['name'];
-        $phone = $post['phone'];
-        $address = $post['address'];
-        $email = isset($post['email']) ? $post['email'] : '';
+        $name = str_replace(',', '&#44;', $post['name']);
+        $phone = str_replace(',', '&#44;', $post['phone']);
+        $address = str_replace(',', '&#44;', $post['address']);
+        $email = isset($post['email']) ? str_replace(',', '&#44;', $post['email']) : '';
         $ids = [];
         $quantities = [];
         foreach ($carts as $cart) {
